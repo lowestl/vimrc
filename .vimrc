@@ -16,7 +16,6 @@ Plug 'w0rp/ale'
 " Plug 'terryma/vim-expand-region'
 
 Plug 'justinmk/vim-sneak'
-Plug 'matze/vim-move'
 Plug 'osyo-manga/vim-over'
 " Plug 'Raimondi/delimitMate'
 Plug 'jiangmiao/auto-pairs'
@@ -27,7 +26,9 @@ Plug 'tpope/vim-repeat'
 
 Plug 'sheerun/vim-polyglot'
 Plug 'pangloss/vim-javascript'
+" Plug 'maxmellon/vim-jsx-pretty'
 Plug 'mxw/vim-jsx'
+" Plug 'mattn/emmet-vim'
 
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
@@ -72,6 +73,8 @@ set t_Co=256
 
 set lazyredraw
 
+filetype plugin indent on
+
 set background=dark
 colorscheme one
 let g:airline_theme="one"
@@ -101,6 +104,10 @@ set wic
 set path+=**
 
 "Remap
+silent! iunmap å
+silent! iunmap ä
+silent! iunmap ö
+
 let mapleader = "\<Space>"
 nmap <Leader>n :nohl<CR>
 nmap <Space> <nop>
@@ -110,14 +117,13 @@ nnoremap ä }
 nnoremap Ö [
 nnoremap Ä ]
 nnoremap - /
+nnoremap gs :Gstatus<CR>
+nnoremap gS :Gstatus<CR>:q<CR>
 
 nnoremap <C-j> <C-w>j
 nnoremap <C-h> <C-w>h
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-
-inoremap å å
-
 
 nnoremap <A-j> :m .+1<CR>==
 nnoremap <A-k> :m .-2<CR>==
@@ -160,6 +166,15 @@ let g:closetag_xhtml_filenames = '*xhtml,*.jsx'
 let g:closetag_shortcut = '>'
 let g:closetag_close_shortcut = '<leader>>'
 
+let g:polyglot_disabled = ['jsx', 'js']
+
+let g:user_emmet_leader_key='<Tab>'
+let g:user_emmet_settings = {
+\  'javascript.jsx' : {
+\      'extends' : 'jsx',
+\  },
+\}
+
 set directory=~/.vim/swapfiles//
 
 set undodir=~/.vim/undofiles//
@@ -188,19 +203,20 @@ set shiftwidth=2
 set softtabstop=2
 set tabstop=2
 
-" set cino=(0
+" set ci
+
+set cino=j1J1
 
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 
-let g:move_key_modifier = 'A'
-
-let g:ctrlp_open_new_file = 'r'
-let g:ctrlp_open_multiple_files = '3vjr'
-
 let g:ale_fixers = {
 \   'javascript': ['eslint'],
 \}
+
+let g:ale_sign_error = '●' " Less aggressive than the default '>>'
+let g:ale_sign_warning = '.'
+let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
 
 "Airline Config
 set laststatus=2
@@ -243,6 +259,11 @@ func! NewParagraph()
 endfu
 
 au FileType html,xhtml,xml,jsx,js let b:delimitMate_matchpairs = "(:),[:],{:}"
+
+let g:AutoPairsShortcutFastWrap=''
+let g:AutoPairsShortcutBackInsert=''
+let g:AutoPairsShortcutJump=''
+let g:AutoPairsMoveCharacter=''
 
 nnoremap <expr> o NewParagraph()
 
