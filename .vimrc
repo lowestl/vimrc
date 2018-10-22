@@ -10,6 +10,17 @@ call plug#begin('~/.vim/plugged')
 " Plug 'kien/ctrlp.vim'
 " Plug 'ervandew/supertab'
 
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue'] }
+
+" Plug 'flowtype/vim-flow'
+
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+
 Plug 'w0rp/ale'
 " Plug 'vim-syntastic/syntastic'
 
@@ -59,6 +70,12 @@ Plug 'jremmen/vim-ripgrep'
 " Plug 'Marfisc/vorange'
 " Plug 'morhetz/gruvbox'
 Plug 'rakr/vim-one'
+Plug 'jdsimcoe/abstract.vim'
+Plug 'tjammer/blayu'
+Plug 'KKPMW/sacredforest-vim'
+Plug 'nightsense/stellarized'
+Plug 'nightsense/snow'
+Plug 'kaicataldo/material.vim'
 " Plug 'rakr/vim-two-firewatch'
 " Plug 'rhysd/vim-color-spring-night'
 " Plug 'trevordmiller/nova-vim'
@@ -76,8 +93,10 @@ set lazyredraw
 filetype plugin indent on
 
 set background=dark
-colorscheme one
-let g:airline_theme="one"
+colorscheme material
+hi SpellBad gui=underline
+set fillchars+=vert:│
+let g:airline_theme="material"
 
 set cc=80
 "hi ColorColumn guibg=#303030
@@ -210,13 +229,54 @@ set cino=j1J1
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 
+let g:ale_linters = {
+\ 'javascript': ['flow', 'eslint'],
+\}
+
 let g:ale_fixers = {
-\   'javascript': ['eslint'],
+\   'javascript': ['eslint', 'prettier'],
+\   'css': ['prettier'],
 \}
 
 let g:ale_sign_error = '●' " Less aggressive than the default '>>'
 let g:ale_sign_warning = '.'
 let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
+
+let g:ale_statusline_format = ['X %d', '? %d', '']
+let g:ale_echo_msg_format = '%linter%: %s'
+
+let g:ale_fix_on_save = 1
+let g:ale_completion_enabled = 1
+let g:ale_completion_max_suggestions = 6
+
+let g:asyncomplete_auto_popup = 0
+
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <TAB>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ asyncomplete#force_refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+let g:asyncomplete_remove_duplicates = 1
+
+let g:asyncomplete_smart_completion = 1
+let g:asyncomplete_auto_popup = 1
+
+if executable('flow-language-server')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'flow-language-server',
+        \ 'cmd': {server_info->[&shell, &shellcmdflag, 'flow-language-server --stdio']},
+        \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), '.flowconfig'))},
+        \ 'whitelist': ['javascript', 'javascript.jsx'],
+        \ })
+endif
+
+set completeopt=menu,menuone,preview,noselect,noinsert
 
 "Airline Config
 set laststatus=2
