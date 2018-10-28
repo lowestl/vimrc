@@ -19,14 +19,21 @@ Plug 'prettier/vim-prettier', {
 
 Plug 'w0rp/ale'
 
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
-let g:deoplete#enable_at_startup = 1
+" if has('nvim')
+"   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" else
+"   Plug 'Shougo/deoplete.nvim'
+"   Plug 'roxma/nvim-yarp'
+"   Plug 'roxma/vim-hug-neovim-rpc'
+" endif
+" let g:deoplete#enable_at_startup = 1
+
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'prabirshrestha/asyncomplete-flow.vim'
+Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
 
 Plug 'justinmk/vim-sneak'
 Plug 'osyo-manga/vim-over'
@@ -45,7 +52,7 @@ Plug 'posva/vim-vue'
 Plug 'hdima/python-syntax'
 Plug 'vim-scripts/autohotkey-ahk'
 Plug 'styled-components/vim-styled-components'
-Plug 'hail2u/vim-css3-syntax'
+" Plug 'hail2u/vim-css3-syntax'
 
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
@@ -118,6 +125,7 @@ set softtabstop=2
 set tabstop=2
 " Works well for javascript
 set cino=j1J1
+set completeopt-=preview
 
 
 " å/ä/ö might cause issues without unmapping them
@@ -268,15 +276,63 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:user_emmet_leader_key='<c-w>'
 " Deoplete Config
 " deoplete tab-complete
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+" inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 
-function! StrTrim(txt)
-  return substitute(a:txt, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
+" function! StrTrim(txt)
+"   return substitute(a:txt, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
+" endfunction
+
+" let g:flow_path = StrTrim(system('PATH=$(npm bin):$PATH && which flow'))
+
+" if g:flow_path != 'flow not found'
+"   let g:deoplete#sources#flow#flow_bin = g:flow_path
+" endif
+" End Deoplete Config
+let g:asyncomplete_smart_completion = 1
+let g:asyncomplete_auto_popup = 1
+let g:asyncomplete_remove_duplicates = 1
+
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
 
-let g:flow_path = StrTrim(system('PATH=$(npm bin):$PATH && which flow'))
+inoremap <silent><expr> <TAB>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ asyncomplete#force_refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-if g:flow_path != 'flow not found'
-  let g:deoplete#sources#flow#flow_bin = g:flow_path
+" au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#flow#get_source_options({
+"     \ 'name': 'flow',
+"     \ 'whitelist': ['javascript'],
+"     \ 'completor': function('asyncomplete#sources#flow#completor'),
+"     \ }))
+
+if executable('flow')
+  au User lsp_setup call lsp#register_server({
+        \ 'name': 'flow',
+        \ 'cmd': {server_info->['flow', 'lsp']},
+        \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), '.flowconfig'))},
+        \ 'whitelist': ['javascript', 'javascript.jsx'],
+        \ })
 endif
-" End Deoplete Config
+
+" if executable('flow-language-server')
+"     au User lsp_setup call lsp#register_server({
+"         \ 'name': 'flow-language-server',
+"         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'flow-language-server --stdio']},
+"         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), '.flowconfig'))},
+"         \ 'whitelist': ['javascript', 'javascript.jsx'],
+"         \ })
+" endif
+
+if has('python3')
+    let g:UltiSnipsExpandTrigger="<c-e>"
+    call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
+        \ 'name': 'ultisnips',
+        \ 'whitelist': ['*'],
+        \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
+        \ }))
+endif
+
