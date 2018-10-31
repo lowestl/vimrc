@@ -38,6 +38,8 @@ Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
 Plug 'justinmk/vim-sneak'
 Plug 'osyo-manga/vim-over'
 
+Plug 'alvan/vim-closetag'
+
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
@@ -200,7 +202,8 @@ endfu
 
 nnoremap <expr> o NewParagraph()
 
-let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`','<':'>'}
+let g:closetag_filetypes = 'html,xhtml,phtml,jsx,javascript.jsx'
+"let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`','<':'>'}
 
 " Airline Config
 set laststatus=2
@@ -270,10 +273,21 @@ nnoremap <silent> <Leader>g :call fzf#run({
 \ })<CR>
 " End FZF Config
 
-let g:UltiSnipsExpandTrigger="<c-e>"
+let g:UltiSnipsExpandTrigger="<c-F9>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:user_emmet_leader_key='<c-w>'
+
+function! ExpandSnippetOrEmmet()
+  if len (UltiSnips#SnippetsInCurrentScope()) > 0
+    return "\<c-r>=UltiSnips#ExpandSnippet()\<CR>"
+  else
+    return " \<BS>\<plug>(emmet-expand-abbr)"
+  endif
+endfunction
+
+imap <expr> <C-e> ExpandSnippetOrEmmet()
+
 " Deoplete Config
 " deoplete tab-complete
 " inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
