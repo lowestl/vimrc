@@ -114,7 +114,7 @@ set undodir=~/.vim/undofiles//
 set undofile
 
 if has('gui_running')
-	set guifont=DejaVu_Sans_Mono_for_Powerline:h13
+	set guifont=DejaVu_Sans_Mono_for_Powerline:h12
   set guioptions-=m
   set guioptions-=T
   set guioptions-=r
@@ -206,6 +206,8 @@ nnoremap <expr> o NewParagraph()
 
 let g:closetag_filetypes = 'html,xhtml,phtml,jsx,javascript.jsx'
 "let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`','<':'>'}
+let g:AutoPairsMoveCharacter = ''
+let g:AutoPairsShortcutFastWrap = ''
 
 " Airline Config
 set laststatus=2
