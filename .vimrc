@@ -34,6 +34,7 @@ Plug 'prabirshrestha/vim-lsp'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'prabirshrestha/asyncomplete-flow.vim'
 Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
+Plug 'prabirshrestha/asyncomplete-file.vim'
 
 Plug 'justinmk/vim-sneak'
 Plug 'osyo-manga/vim-over'
@@ -142,6 +143,7 @@ nnoremap ö {
 nnoremap ä }
 nnoremap Ö [
 nnoremap Ä ]
+nnoremap D dd
 
 vnoremap ¤ $
 vnoremap ö {
@@ -350,3 +352,9 @@ if has('python3')
         \ }))
 endif
 
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+    \ 'name': 'file',
+    \ 'whitelist': ['*'],
+    \ 'priority': 10,
+    \ 'completor': function('asyncomplete#sources#file#completor')
+    \ }))
