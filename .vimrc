@@ -54,7 +54,7 @@ Plug 'mxw/vim-jsx'
 Plug 'posva/vim-vue'
 Plug 'hdima/python-syntax'
 Plug 'vim-scripts/autohotkey-ahk'
-Plug 'styled-components/vim-styled-components'
+Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 " Plug 'hail2u/vim-css3-syntax'
 
 Plug 'SirVer/ultisnips'
@@ -64,6 +64,7 @@ Plug 'epilande/vim-react-snippets'
 Plug 'mattn/emmet-vim'
 
 Plug 'wellle/targets.vim'
+Plug 'machakann/vim-highlightedyank'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -76,6 +77,20 @@ Plug 'rakr/vim-one'
 Plug 'romainl/Apprentice'
 Plug 'w0ng/vim-hybrid'
 Plug 'morhetz/gruvbox'
+Plug 'srcery-colors/srcery-vim'
+Plug 'tjammer/blayu.vim'
+Plug 'jdsimcoe/abstract.vim'
+Plug 'rudrab/vim-coogle'
+Plug 'koirand/tokyo-metro.vim'
+Plug 'neutaaaaan/iosvkem'
+Plug 'Jimeno0/vim-chito'
+Plug 'kaicataldo/material.vim'
+Plug 'tyrannicaltoucan/vim-quantum'
+Plug 'drewtempelmeyer/palenight.vim'
+Plug 'BrainDeath0/Hypsteria'
+Plug 'nightsense/snow'
+Plug 'skreek/skeletor.vim'
+Plug 'haishanh/night-owl.vim'
 
 call plug#end()
 
@@ -84,9 +99,10 @@ call plug#end()
 set lazyredraw
 
 filetype plugin indent on
+syntax enable
 
 set background=dark
-colorscheme one
+colorscheme night-owl
 hi SpellBad gui=underline
 set fillchars+=vert:│
 
@@ -188,6 +204,8 @@ inoremap ª <Esc>:m .-2<CR>==gi
 vnoremap √ :m '>+1<CR>gv=gv
 vnoremap ª :m '<-2<CR>gv=gv
 
+let g:javascript_plugin_flow = 1
+
 func! NewParagraph()
 	"if current line is last line, or current line is non-empty; insert new line
 	if line(".")==line("$") || match(getline(line(".")), "^\s*$")<0
@@ -280,7 +298,7 @@ nnoremap <silent> <Leader>g :call fzf#run({
 let g:UltiSnipsExpandTrigger="<c-F9>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-let g:user_emmet_leader_key='<c-w>'
+let g:user_emmet_leader_key='<c-8>'
 
 function! ExpandSnippetOrEmmet()
   if len (UltiSnips#SnippetsInCurrentScope()) > 0
@@ -327,14 +345,25 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 "     \ 'completor': function('asyncomplete#sources#flow#completor'),
 "     \ }))
 
-if executable('flow')
-  au User lsp_setup call lsp#register_server({
-        \ 'name': 'flow',
-        \ 'cmd': {server_info->['flow', 'lsp']},
-        \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), '.flowconfig'))},
-        \ 'whitelist': ['javascript', 'javascript.jsx'],
-        \ })
-endif
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#flow#get_source_options({
+    \ 'name': 'flow',
+    \ 'whitelist': ['javascript','javascript.jsx'],
+    \ 'completor': function('asyncomplete#sources#flow#completor'),
+    \ 'config': {
+    \    'prefer_local': 1,
+    \    'flowbin_path': expand('~/bin/flow'),
+    \    'show_typeinfo': 1
+    \  },
+    \ }))
+
+" if executable('flow')
+"   au User lsp_setup call lsp#register_server({
+"         \ 'name': 'flow',
+"         \ 'cmd': {server_info->['flow', 'lsp']},
+"         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), '.flowconfig'))},
+"         \ 'whitelist': ['javascript', 'javascript.jsx'],
+"         \ })
+" endif
 
 " if executable('flow-language-server')
 "     au User lsp_setup call lsp#register_server({
