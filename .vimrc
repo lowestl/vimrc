@@ -188,6 +188,13 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+" Buffer navigation
+nnoremap <A-h> :bp<CR>
+nnoremap <A-l> :bn<CR>
+
+nnoremap ˛ :bp<CR>
+nnoremap ﬁ :bn<CR>
+
 " Line manipulation
 nnoremap <A-j> :m .+1<CR>==
 nnoremap <A-k> :m .-2<CR>==
