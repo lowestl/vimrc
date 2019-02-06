@@ -13,9 +13,9 @@ endif
 "Plugins
 call plug#begin('~/.vim/plugged')
 
-Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install',
-  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue'] }
+" Plug 'prettier/vim-prettier', {
+"   \ 'do': 'yarn install',
+"   \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue'] }
 
 Plug 'w0rp/ale'
 
@@ -28,15 +28,18 @@ Plug 'w0rp/ale'
 " endif
 " let g:deoplete#enable_at_startup = 1
 
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
-Plug 'prabirshrestha/asyncomplete-flow.vim'
-Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
-Plug 'prabirshrestha/asyncomplete-file.vim'
+" Plug 'prabirshrestha/async.vim'
+" Plug 'prabirshrestha/asyncomplete.vim'
+" Plug 'prabirshrestha/vim-lsp'
+" Plug 'prabirshrestha/asyncomplete-lsp.vim'
+" Plug 'prabirshrestha/asyncomplete-flow.vim'
+" Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
+" Plug 'prabirshrestha/asyncomplete-file.vim'
+
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 
 Plug 'justinmk/vim-sneak'
+Plug 'unblevable/quick-scope'
 Plug 'osyo-manga/vim-over'
 
 Plug 'alvan/vim-closetag'
@@ -47,10 +50,14 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 Plug 'airblade/vim-gitgutter'
+Plug 'tommcdo/vim-exchange'
 
 Plug 'sheerun/vim-polyglot'
 Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
+" Plug 'mxw/vim-jsx'
+Plug 'MaxMEllon/vim-jsx-pretty'
+Plug 'elzr/vim-json'
+Plug 'jparise/vim-graphql'
 Plug 'posva/vim-vue'
 Plug 'hdima/python-syntax'
 Plug 'vim-scripts/autohotkey-ahk'
@@ -70,6 +77,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'jremmen/vim-ripgrep'
 
+" Plug 'TaDaa/vimade'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
@@ -91,7 +99,13 @@ Plug 'BrainDeath0/Hypsteria'
 Plug 'nightsense/snow'
 Plug 'skreek/skeletor.vim'
 Plug 'haishanh/night-owl.vim'
-
+Plug 'caksoylar/vim-mysticaltutor'
+Plug 'schickele/vim-nachtleben'
+Plug 'fortes/vim-escuro'
+Plug 'Nequo/vim-allomancer'
+Plug 'patstockwell/vim-monokai-tasty'
+Plug 'nightsense/cosmic_latte'
+Plug 'srcery-colors/srcery-vim'
 call plug#end()
 
 " set t_Co=256
@@ -102,7 +116,7 @@ filetype plugin indent on
 syntax enable
 
 set background=dark
-colorscheme night-owl
+colorscheme srcery
 hi SpellBad gui=underline
 set fillchars+=vert:│
 
@@ -128,6 +142,8 @@ set path+=**
 set directory=~/.vim/swapfiles//
 set undodir=~/.vim/undofiles//
 set undofile
+
+set hidden
 
 if has('gui_running')
 	set guifont=DejaVu_Sans_Mono_for_Powerline:h12
@@ -181,12 +197,17 @@ nmap <Leader>f :FZF<CR>
 nmap <Leader>q :q<CR>
 nmap <Leader>w :w<CR>
 nmap <Leader>s :Rg 
+nmap <leader>t :vert term zsh<CR><C-w>L
 
 " Window navigation
 nnoremap <C-j> <C-w>j
 nnoremap <C-h> <C-w>h
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
+tnoremap <C-j> <C-w>j
+tnoremap <C-h> <C-w>h
+tnoremap <C-k> <C-w>k
+tnoremap <C-l> <C-w>l
 
 " Buffer navigation
 nnoremap <A-h> :bp<CR>
@@ -213,6 +234,10 @@ vnoremap ª :m '<-2<CR>gv=gv
 
 let g:javascript_plugin_flow = 1
 
+" Terminal mode
+tnoremap <C-n> <C-w>N
+tnoremap <C-q> <C-w>:bd!<CR>
+
 func! NewParagraph()
 	"if current line is last line, or current line is non-empty; insert new line
 	if line(".")==line("$") || match(getline(line(".")), "^\s*$")<0
@@ -227,6 +252,7 @@ func! NewParagraph()
 	endif
 endfu
 
+
 nnoremap <expr> o NewParagraph()
 
 let g:closetag_filetypes = 'html,xhtml,phtml,jsx,javascript.jsx'
@@ -240,6 +266,16 @@ let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#whitespace#checks = [ 'trailing' ]
 let g:airline_powerline_fonts = 1
 " End Airline Config
+
+" let g:vimade = {
+"   \ "normalid": '',
+"   \ "basefg": '',
+"   \ "basebg": '',
+"   \ "fadelevel": 0.6,
+"   \ "colbufsize": 30,
+"   \ "rowbufsize": 30,
+"   \ "checkinterval": 32,
+" \ }
 
 " ALE Config
 nmap <silent> <C-p> <Plug>(ale_previous_wrap)
@@ -295,9 +331,9 @@ function! s:bufopen(e)
 endfunction
 
 function! s:fzf_neighbouring_files()
-  let current_file =expand("%")
-  let cwd = fnamemodify(current_file, ':p:h')
-  let command = 'ag -g "" -f ' . cwd . ' --depth 0'
+  let current_file = expand("%")
+  let cwd = fnamemodify(current_file, ':p:h:h')
+  let command = 'ag -g "" -f ' . cwd . ' --depth 2'
 
   call fzf#run({
         \ 'source': command,
@@ -346,20 +382,20 @@ imap <expr> <C-e> ExpandSnippetOrEmmet()
 "   let g:deoplete#sources#flow#flow_bin = g:flow_path
 " endif
 " End Deoplete Config
-let g:asyncomplete_smart_completion = 1
-let g:asyncomplete_auto_popup = 1
-let g:asyncomplete_remove_duplicates = 1
+" let g:asyncomplete_smart_completion = 1
+" let g:asyncomplete_auto_popup = 1
+" let g:asyncomplete_remove_duplicates = 1
 
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
+" function! s:check_back_space() abort
+"     let col = col('.') - 1
+"     return !col || getline('.')[col - 1]  =~ '\s'
+" endfunction
 
-inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>check_back_space() ? "\<TAB>" :
-  \ asyncomplete#force_refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" inoremap <silent><expr> <TAB>
+"   \ pumvisible() ? "\<C-n>" :
+"   \ <SID>check_back_space() ? "\<TAB>" :
+"   \ asyncomplete#force_refresh()
+" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 " au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#flow#get_source_options({
 "     \ 'name': 'flow',
@@ -367,16 +403,16 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 "     \ 'completor': function('asyncomplete#sources#flow#completor'),
 "     \ }))
 
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#flow#get_source_options({
-    \ 'name': 'flow',
-    \ 'whitelist': ['javascript','javascript.jsx'],
-    \ 'completor': function('asyncomplete#sources#flow#completor'),
-    \ 'config': {
-    \    'prefer_local': 1,
-    \    'flowbin_path': expand('~/bin/flow'),
-    \    'show_typeinfo': 1
-    \  },
-    \ }))
+" au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#flow#get_source_options({
+"     \ 'name': 'flow',
+"     \ 'whitelist': ['javascript','javascript.jsx'],
+"     \ 'completor': function('asyncomplete#sources#flow#completor'),
+"     \ 'config': {
+"     \    'prefer_local': 1,
+"     \    'flowbin_path': expand('~/bin/flow'),
+"     \    'show_typeinfo': 1
+"     \  },
+"     \ }))
 
 " if executable('flow')
 "   au User lsp_setup call lsp#register_server({
@@ -398,16 +434,34 @@ au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#source
 
 if has('python3')
     let g:UltiSnipsExpandTrigger="<c-e>"
-    call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
-        \ 'name': 'ultisnips',
-        \ 'whitelist': ['*'],
-        \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
-        \ }))
+    " call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
+    "     \ 'name': 'ultisnips',
+    "     \ 'whitelist': ['*'],
+    "     \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
+    "     \ }))
 endif
 
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-    \ 'name': 'file',
-    \ 'whitelist': ['*'],
-    \ 'priority': 10,
-    \ 'completor': function('asyncomplete#sources#file#completor')
-    \ }))
+" au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+"     \ 'name': 'file',
+"     \ 'whitelist': ['*'],
+"     \ 'priority': 10,
+"     \ 'completor': function('asyncomplete#sources#file#completor')
+"     \ }))
+
+" use <tab> for trigger completion and navigate to next complete item
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+inoremap <silent><expr> <S-TAB>
+      \ pumvisible() ? "\<C-p>" :
+      \ <SID>check_back_space() ? "\<S-TAB>" :
+      \ coc#refresh()
+
+autocmd User CocNvimInit
