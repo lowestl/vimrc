@@ -102,6 +102,8 @@ export FZF_DEFAULT_COMMAND='rg --hidden --files --color never'
 
 export PATH="$PATH:/usr/local/git/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
+export GITHUB_TOKEN="41df137a8580a4dbeb99a1d9e94d53d12fe261c1"
+
 export NVM_DIR="$HOME/.nvm"
 . "/usr/local/opt/nvm/nvm.sh"
 
@@ -135,3 +137,7 @@ alias re="cd ~/repos"
 alias ..="cd .."
 alias vrc="mvim ~/.vimrc"
 alias zrc="mvim ~/.zshrc"
+
+eval $(thefuck --alias)
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

@@ -106,6 +106,10 @@ Plug 'Nequo/vim-allomancer'
 Plug 'patstockwell/vim-monokai-tasty'
 Plug 'nightsense/cosmic_latte'
 Plug 'srcery-colors/srcery-vim'
+Plug 'ntk148v/vim-horizon'
+Plug 'liuchengxu/space-vim-theme'
+Plug 'sainnhe/vim-color-forest-night'
+Plug 'rhysd/vim-color-spring-night'
 call plug#end()
 
 " set t_Co=256
@@ -154,6 +158,10 @@ if has('gui_running')
   set ttimeoutlen=50
 endif
 
+set cmdheight=2
+set updatetime=300
+set shortmess+=c
+
 set expandtab
 set shiftwidth=2
 set softtabstop=2
@@ -176,6 +184,7 @@ nnoremap ä }
 nnoremap Ö [
 nnoremap Ä ]
 nnoremap D dd
+nnoremap <C-E> :e <C-r>=expand('%:p:h')<CR>/
 
 vnoremap ¤ $
 vnoremap ö {
@@ -463,5 +472,3 @@ inoremap <silent><expr> <S-TAB>
       \ pumvisible() ? "\<C-p>" :
       \ <SID>check_back_space() ? "\<S-TAB>" :
       \ coc#refresh()
-
-autocmd User CocNvimInit
