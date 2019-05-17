@@ -19,25 +19,8 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'w0rp/ale'
 
-" if has('nvim')
-"   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" else
-"   Plug 'Shougo/deoplete.nvim'
-"   Plug 'roxma/nvim-yarp'
-"   Plug 'roxma/vim-hug-neovim-rpc'
-" endif
-" let g:deoplete#enable_at_startup = 1
-
-" Plug 'prabirshrestha/async.vim'
-" Plug 'prabirshrestha/asyncomplete.vim'
-" Plug 'prabirshrestha/vim-lsp'
-" Plug 'prabirshrestha/asyncomplete-lsp.vim'
-" Plug 'prabirshrestha/asyncomplete-flow.vim'
-" Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
-" Plug 'prabirshrestha/asyncomplete-file.vim'
-
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
-
+Plug 'Lenovsky/nuake'
 Plug 'justinmk/vim-sneak'
 Plug 'unblevable/quick-scope'
 Plug 'osyo-manga/vim-over'
@@ -69,47 +52,23 @@ Plug 'honza/vim-snippets'
 Plug 'joaohkfaria/vim-jest-snippets'
 Plug 'epilande/vim-react-snippets'
 Plug 'mattn/emmet-vim'
-
+Plug 'mbbill/undotree'
 Plug 'wellle/targets.vim'
 Plug 'machakann/vim-highlightedyank'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'jremmen/vim-ripgrep'
+" Plug 'jremmen/vim-ripgrep'
 
 " Plug 'TaDaa/vimade'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+" Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
 
 Plug 'rakr/vim-one'
-Plug 'romainl/Apprentice'
-Plug 'w0ng/vim-hybrid'
 Plug 'morhetz/gruvbox'
-Plug 'srcery-colors/srcery-vim'
-Plug 'tjammer/blayu.vim'
-Plug 'jdsimcoe/abstract.vim'
-Plug 'rudrab/vim-coogle'
-Plug 'koirand/tokyo-metro.vim'
-Plug 'neutaaaaan/iosvkem'
-Plug 'Jimeno0/vim-chito'
-Plug 'kaicataldo/material.vim'
 Plug 'tyrannicaltoucan/vim-quantum'
 Plug 'drewtempelmeyer/palenight.vim'
-Plug 'BrainDeath0/Hypsteria'
-Plug 'nightsense/snow'
-Plug 'skreek/skeletor.vim'
-Plug 'haishanh/night-owl.vim'
-Plug 'caksoylar/vim-mysticaltutor'
-Plug 'schickele/vim-nachtleben'
-Plug 'fortes/vim-escuro'
-Plug 'Nequo/vim-allomancer'
-Plug 'patstockwell/vim-monokai-tasty'
-Plug 'nightsense/cosmic_latte'
 Plug 'srcery-colors/srcery-vim'
-Plug 'ntk148v/vim-horizon'
-Plug 'liuchengxu/space-vim-theme'
-Plug 'sainnhe/vim-color-forest-night'
-Plug 'rhysd/vim-color-spring-night'
 call plug#end()
 
 " set t_Co=256
@@ -120,7 +79,7 @@ filetype plugin indent on
 syntax enable
 
 set background=dark
-colorscheme srcery
+colorscheme palenight
 hi SpellBad gui=underline
 set fillchars+=vert:│
 
@@ -201,8 +160,9 @@ nmap <ESC><ESC> :nohl<CR>
 nnoremap gs :Gstatus<CR>
 nnoremap gS :Gstatus<CR>:q<CR>
 
-nmap <Leader>r :CtrlPMRU<CR>
 nmap <Leader>f :FZF<CR>
+nmap <Leader><Space> :FZF<CR>
+nmap <Leader><TAB> :Buffers<CR>
 nmap <Leader>q :q<CR>
 nmap <Leader>w :w<CR>
 nmap <Leader>s :Rg 
@@ -241,11 +201,28 @@ inoremap ª <Esc>:m .-2<CR>==gi
 vnoremap √ :m '>+1<CR>gv=gv
 vnoremap ª :m '<-2<CR>gv=gv
 
+" Quickfix navigation
+nnoremap <A-n> :cn<CR>
+nnoremap <A-p> :cp<CR>
+
+nnoremap ‘ :cn<CR>
+nnoremap π :cp<CR>
+
 let g:javascript_plugin_flow = 1
 
 " Terminal mode
 tnoremap <C-n> <C-w>N
-tnoremap <C-q> <C-w>:bd!<CR>
+" tnoremap <C-q> <C-w>:bd!<CR>
+
+tnoremap <C-Tab> <C-w>:tabn<CR>
+tnoremap <C-S-Tab> <C-w>:tabp<CR>
+
+nnoremap <C-Tab> :tabn<CR>
+nnoremap <C-S-Tab> :tabp<CR>
+
+nnoremap ° :Nuake<CR>
+inoremap ° <C-\><C-n>:Nuake<CR>
+tnoremap ° <C-\><C-n>:Nuake<CR>
 
 func! NewParagraph()
 	"if current line is last line, or current line is non-empty; insert new line
@@ -328,40 +305,6 @@ let g:fzf_colors =
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
 
-function! s:buflist()
-  redir => ls
-  silent ls
-  redir END
-  return split(ls, '\n')
-endfunction
-
-function! s:bufopen(e)
-  execute 'buffer' matchstr(a:e, '^[ 0-9]*')
-endfunction
-
-function! s:fzf_neighbouring_files()
-  let current_file = expand("%")
-  let cwd = fnamemodify(current_file, ':p:h:h')
-  let command = 'ag -g "" -f ' . cwd . ' --depth 2'
-
-  call fzf#run({
-        \ 'source': command,
-        \ 'sink':   'e',
-        \ 'options': '-m -x +s',
-        \ 'down':  '~20%' })
-endfunction
-
-command! FZFNeigh call s:fzf_neighbouring_files()
-
-nnoremap <silent> <Leader>F :FZFNeigh<CR>
-nnoremap <silent> <Leader>g :call fzf#run({
-\   'source':  reverse(<sid>buflist()),
-\   'sink':    function('<sid>bufopen'),
-\   'options': '+m',
-\   'down':    len(<sid>buflist()) + 2
-\ })<CR>
-" End FZF Config
-
 let g:UltiSnipsExpandTrigger="<c-F9>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
@@ -377,70 +320,6 @@ endfunction
 
 imap <expr> <C-e> ExpandSnippetOrEmmet()
 
-" Deoplete Config
-" deoplete tab-complete
-" inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-
-" function! StrTrim(txt)
-"   return substitute(a:txt, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
-" endfunction
-
-" let g:flow_path = StrTrim(system('PATH=$(npm bin):$PATH && which flow'))
-
-" if g:flow_path != 'flow not found'
-"   let g:deoplete#sources#flow#flow_bin = g:flow_path
-" endif
-" End Deoplete Config
-" let g:asyncomplete_smart_completion = 1
-" let g:asyncomplete_auto_popup = 1
-" let g:asyncomplete_remove_duplicates = 1
-
-" function! s:check_back_space() abort
-"     let col = col('.') - 1
-"     return !col || getline('.')[col - 1]  =~ '\s'
-" endfunction
-
-" inoremap <silent><expr> <TAB>
-"   \ pumvisible() ? "\<C-n>" :
-"   \ <SID>check_back_space() ? "\<TAB>" :
-"   \ asyncomplete#force_refresh()
-" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-" au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#flow#get_source_options({
-"     \ 'name': 'flow',
-"     \ 'whitelist': ['javascript'],
-"     \ 'completor': function('asyncomplete#sources#flow#completor'),
-"     \ }))
-
-" au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#flow#get_source_options({
-"     \ 'name': 'flow',
-"     \ 'whitelist': ['javascript','javascript.jsx'],
-"     \ 'completor': function('asyncomplete#sources#flow#completor'),
-"     \ 'config': {
-"     \    'prefer_local': 1,
-"     \    'flowbin_path': expand('~/bin/flow'),
-"     \    'show_typeinfo': 1
-"     \  },
-"     \ }))
-
-" if executable('flow')
-"   au User lsp_setup call lsp#register_server({
-"         \ 'name': 'flow',
-"         \ 'cmd': {server_info->['flow', 'lsp']},
-"         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), '.flowconfig'))},
-"         \ 'whitelist': ['javascript', 'javascript.jsx'],
-"         \ })
-" endif
-
-" if executable('flow-language-server')
-"     au User lsp_setup call lsp#register_server({
-"         \ 'name': 'flow-language-server',
-"         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'flow-language-server --stdio']},
-"         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), '.flowconfig'))},
-"         \ 'whitelist': ['javascript', 'javascript.jsx'],
-"         \ })
-" endif
-
 if has('python3')
     let g:UltiSnipsExpandTrigger="<c-e>"
     " call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
@@ -449,13 +328,6 @@ if has('python3')
     "     \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
     "     \ }))
 endif
-
-" au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-"     \ 'name': 'file',
-"     \ 'whitelist': ['*'],
-"     \ 'priority': 10,
-"     \ 'completor': function('asyncomplete#sources#file#completor')
-"     \ }))
 
 " use <tab> for trigger completion and navigate to next complete item
 function! s:check_back_space() abort
