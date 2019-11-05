@@ -167,7 +167,7 @@ nmap <Leader><Space> :FZF<CR>
 nmap <Leader><TAB> :Buffers<CR>
 nmap <Leader>q :q<CR>
 nmap <Leader>w :w<CR>
-nmap <Leader>s :RgRaw
+nmap <Leader>s :RgRaw 
 nmap <leader>t :vert term zsh<CR><C-w>L
 
 " Window navigation
