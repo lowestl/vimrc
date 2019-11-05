@@ -24,6 +24,7 @@ Plug 'Lenovsky/nuake'
 Plug 'justinmk/vim-sneak'
 Plug 'unblevable/quick-scope'
 Plug 'osyo-manga/vim-over'
+Plug 'janko/vim-test'
 
 Plug 'alvan/vim-closetag'
 
@@ -35,10 +36,10 @@ Plug 'tpope/vim-repeat'
 Plug 'airblade/vim-gitgutter'
 Plug 'tommcdo/vim-exchange'
 
-Plug 'sheerun/vim-polyglot'
-Plug 'pangloss/vim-javascript'
-" Plug 'mxw/vim-jsx'
 Plug 'MaxMEllon/vim-jsx-pretty'
+Plug 'pangloss/vim-javascript'
+Plug 'sheerun/vim-polyglot'
+" Plug 'mxw/vim-jsx'
 Plug 'elzr/vim-json'
 Plug 'jparise/vim-graphql'
 Plug 'posva/vim-vue'
@@ -58,11 +59,12 @@ Plug 'machakann/vim-highlightedyank'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'jesseleite/vim-agriculture'
 " Plug 'jremmen/vim-ripgrep'
 
 " Plug 'TaDaa/vimade'
-" Plug 'vim-airline/vim-airline'
-" Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 Plug 'rakr/vim-one'
 Plug 'morhetz/gruvbox'
@@ -165,7 +167,7 @@ nmap <Leader><Space> :FZF<CR>
 nmap <Leader><TAB> :Buffers<CR>
 nmap <Leader>q :q<CR>
 nmap <Leader>w :w<CR>
-nmap <Leader>s :Rg 
+nmap <Leader>s :RgRaw
 nmap <leader>t :vert term zsh<CR><C-w>L
 
 " Window navigation
@@ -241,7 +243,9 @@ endfu
 
 nnoremap <expr> o NewParagraph()
 
-let g:closetag_filetypes = 'html,xhtml,phtml,jsx,javascript.jsx'
+let g:polyglot_disabled = ['jsx']
+let g:jsx_ext_required = 0
+let g:closetag_filetypes = 'html,xhtml,phtml,jsx,javascript.jsx,javascript'
 "let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`','<':'>'}
 let g:AutoPairsMoveCharacter = ''
 let g:AutoPairsShortcutFastWrap = ''
