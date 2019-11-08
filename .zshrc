@@ -2,13 +2,15 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/lowe.stalnacke/.oh-my-zsh"
+export ZSH="/Users/lowestalnacke/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+ZSH_THEME="agnoster"
+
+DEFAULT_USER="lowestalnacke"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -102,12 +104,10 @@ export FZF_DEFAULT_COMMAND='rg --hidden --files --color never'
 
 export PATH="$PATH:/usr/local/git/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
-export GITHUB_TOKEN="41df137a8580a4dbeb99a1d9e94d53d12fe261c1"
-
 export NVM_DIR="$HOME/.nvm"
 . "/usr/local/opt/nvm/nvm.sh"
 
-. "/Users/lowe.stalnacke/z.sh"
+. "/Users/lowestalnacke/z.sh"
 
 # place this after nvm initialization!
 autoload -U add-zsh-hook
@@ -132,6 +132,7 @@ add-zsh-hook chpwd load-nvmrc
 load-nvmrc
 
 alias v="mvim"
+alias vv="mvim -v"
 alias gs="git status"
 alias re="cd ~/repos"
 alias ..="cd .."
