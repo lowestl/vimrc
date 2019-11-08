@@ -18,7 +18,7 @@ call plug#begin('~/.vim/plugged')
 "   \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue'] }
 
 Plug 'w0rp/ale'
-
+Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 Plug 'Lenovsky/nuake'
 Plug 'justinmk/vim-sneak'
@@ -77,10 +77,13 @@ call plug#end()
 
 set lazyredraw
 
+set termguicolors
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+
 filetype plugin indent on
 syntax enable
 
-set background=dark
 colorscheme palenight
 hi SpellBad gui=underline
 set fillchars+=vert:│
@@ -120,7 +123,7 @@ if has('gui_running')
 endif
 
 set cmdheight=2
-set updatetime=300
+set updatetime=1000
 set shortmess+=c
 
 set expandtab
@@ -168,7 +171,6 @@ nmap <Leader><TAB> :Buffers<CR>
 nmap <Leader>q :q<CR>
 nmap <Leader>w :w<CR>
 nmap <Leader>s :RgRaw 
-nmap <leader>t :vert term zsh<CR><C-w>L
 
 " Window navigation
 nnoremap <C-j> <C-w>j
@@ -257,15 +259,8 @@ let g:airline#extensions#whitespace#checks = [ 'trailing' ]
 let g:airline_powerline_fonts = 1
 " End Airline Config
 
-" let g:vimade = {
-"   \ "normalid": '',
-"   \ "basefg": '',
-"   \ "basebg": '',
-"   \ "fadelevel": 0.6,
-"   \ "colbufsize": 30,
-"   \ "rowbufsize": 30,
-"   \ "checkinterval": 32,
-" \ }
+let g:prettier#autoformat = 0
+autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
 
 " ALE Config
 nmap <silent> <C-p> <Plug>(ale_previous_wrap)
@@ -276,8 +271,7 @@ let g:ale_linters = {
 \}
 
 let g:ale_fixers = {
-\   'javascript': ['eslint', 'prettier'],
-\   'css': ['prettier'],
+\   'javascript': ['eslint'],
 \}
 
 let g:ale_sign_error = '●' " Less aggressive than the default '>>'
@@ -291,23 +285,8 @@ let g:ale_fix_on_save = 1
 " End ALE Config
 
 " FZF Config
-let g:fzf_layout = { 'down': '~20%' }
-
-" Customize fzf colors to match your color scheme
-let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'border':  ['fg', 'Ignore'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
+let g:fzf_layout = { 'down': '~25%' }
+" End FZF Config
 
 let g:UltiSnipsExpandTrigger="<c-F9>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
