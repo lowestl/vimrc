@@ -19,7 +19,7 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'w0rp/ale'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
 Plug 'Lenovsky/nuake'
 Plug 'justinmk/vim-sneak'
 Plug 'unblevable/quick-scope'
@@ -48,6 +48,8 @@ Plug 'vim-scripts/autohotkey-ahk'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 " Plug 'hail2u/vim-css3-syntax'
 
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'joaohkfaria/vim-jest-snippets'
@@ -56,6 +58,7 @@ Plug 'mattn/emmet-vim'
 Plug 'mbbill/undotree'
 Plug 'wellle/targets.vim'
 Plug 'machakann/vim-highlightedyank'
+" Plug 'francoiscabrol/ranger.vim'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -92,7 +95,7 @@ set cc=80
 set signcolumn=yes
 
 set encoding=utf-8
-set nu rnu
+" set nu rnu
 set noshowmode
 set showmatch
 set hlsearch incsearch
@@ -123,7 +126,7 @@ if has('gui_running')
 endif
 
 set cmdheight=2
-set updatetime=1000
+set updatetime=500
 set shortmess+=c
 
 set expandtab
@@ -165,12 +168,12 @@ nmap <ESC><ESC> :nohl<CR>
 nnoremap gs :Gstatus<CR>
 nnoremap gS :Gstatus<CR>:q<CR>
 
-nmap <Leader>f :FZF<CR>
 nmap <Leader><Space> :FZF<CR>
 nmap <Leader><TAB> :Buffers<CR>
 nmap <Leader>q :q<CR>
 nmap <Leader>w :w<CR>
 nmap <Leader>s :RgRaw 
+nmap <Leader>r :History<CR>
 
 " Window navigation
 nnoremap <C-j> <C-w>j
@@ -242,8 +245,9 @@ func! NewParagraph()
 	endif
 endfu
 
-
 nnoremap <expr> o NewParagraph()
+
+" let g:ranger_replace_netrw = 1
 
 let g:polyglot_disabled = ['jsx']
 let g:jsx_ext_required = 0
@@ -260,7 +264,7 @@ let g:airline_powerline_fonts = 1
 " End Airline Config
 
 let g:prettier#autoformat = 0
-autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
+autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.yaml,*.html PrettierAsync
 
 " ALE Config
 nmap <silent> <C-p> <Plug>(ale_previous_wrap)
