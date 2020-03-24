@@ -148,8 +148,8 @@ nmap <Space> <nop>
 nnoremap € $
 nnoremap ö {
 nnoremap ä }
-nnoremap Ö [
-nnoremap Ä ]
+nnoremap Ö {
+nnoremap Ä }
 nnoremap D dd
 nnoremap <C-E> :e <C-r>=expand('%:p:h')<CR>/
 
@@ -263,6 +263,8 @@ let g:airline#extensions#whitespace#checks = [ 'trailing' ]
 let g:airline_powerline_fonts = 1
 " End Airline Config
 
+let g:prettier#quickfix_enabled = 0
+let g:prettier#quickfix_auto_focus = 0
 let g:prettier#autoformat = 0
 autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.yaml,*.html PrettierAsync
 
