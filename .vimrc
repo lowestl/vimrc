@@ -13,13 +13,9 @@ endif
 "Plugins
 call plug#begin('~/.vim/plugged')
 
-" Plug 'prettier/vim-prettier', {
-"   \ 'do': 'yarn install',
-"   \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue'] }
-
-Plug 'w0rp/ale'
+" Plug 'dense-analysis/ale'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
-Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'Lenovsky/nuake'
 Plug 'justinmk/vim-sneak'
 Plug 'unblevable/quick-scope'
@@ -49,6 +45,7 @@ Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 " Plug 'hail2u/vim-css3-syntax'
 
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+Plug 'zerowidth/vim-copy-as-rtf'
 
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
@@ -92,7 +89,6 @@ hi SpellBad gui=underline
 set fillchars+=vert:│
 
 set cc=80
-set signcolumn=yes
 
 set encoding=utf-8
 " set nu rnu
@@ -126,7 +122,7 @@ if has('gui_running')
 endif
 
 set cmdheight=2
-set updatetime=500
+set updatetime=300
 set shortmess+=c
 
 set expandtab
@@ -137,6 +133,12 @@ set tabstop=2
 set cino=j1J1
 set completeopt-=preview
 
+if has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
 
 " å/ä/ö might cause issues without unmapping them
 silent! iunmap å
@@ -168,12 +170,13 @@ nmap <ESC><ESC> :nohl<CR>
 nnoremap gs :Gstatus<CR>
 nnoremap gS :Gstatus<CR>:q<CR>
 
-nmap <Leader><Space> :FZF<CR>
+nmap <Leader><Space> :Files<CR>
 nmap <Leader><TAB> :Buffers<CR>
 nmap <Leader>q :q<CR>
 nmap <Leader>w :w<CR>
 nmap <Leader>s :RgRaw 
 nmap <Leader>r :History<CR>
+nmap <Leader>p :PrettierAsync<CR>
 
 " Window navigation
 nnoremap <C-j> <C-w>j
@@ -231,6 +234,9 @@ nnoremap ° :Nuake<CR>
 inoremap ° <C-\><C-n>:Nuake<CR>
 tnoremap ° <C-\><C-n>:Nuake<CR>
 
+nmap <silent> <C-S-n> <Plug>(coc-diagnostic-prev)
+nmap <silent> <C-n> <Plug>(coc-diagnostic-next)
+
 func! NewParagraph()
 	"if current line is last line, or current line is non-empty; insert new line
 	if line(".")==line("$") || match(getline(line(".")), "^\s*$")<0
@@ -251,7 +257,7 @@ nnoremap <expr> o NewParagraph()
 
 let g:polyglot_disabled = ['jsx']
 let g:jsx_ext_required = 0
-let g:closetag_filetypes = 'html,xhtml,phtml,jsx,javascript.jsx,javascript'
+let g:closetag_filetypes = 'html,xhtml,phtml,tsx,javascript.tsxjsx,javascript.jsx,javascript'
 "let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`','<':'>'}
 let g:AutoPairsMoveCharacter = ''
 let g:AutoPairsShortcutFastWrap = ''
@@ -263,31 +269,35 @@ let g:airline#extensions#whitespace#checks = [ 'trailing' ]
 let g:airline_powerline_fonts = 1
 " End Airline Config
 
-let g:prettier#quickfix_enabled = 0
-let g:prettier#quickfix_auto_focus = 0
-let g:prettier#autoformat = 0
-autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.yaml,*.html PrettierAsync
+" let g:prettier#quickfix_enabled = 0
+" let g:prettier#quickfix_auto_focus = 0
+" let g:prettier#autoformat = 0
+" autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.yaml,*.html PrettierAsync
 
 " ALE Config
-nmap <silent> <C-p> <Plug>(ale_previous_wrap)
-nmap <silent> <C-n> <Plug>(ale_next_wrap)
+" nmap <silent> <C-p> <Plug>(ale_previous_wrap)
+" nmap <silent> <C-n> <Plug>(ale_next_wrap)
 
-let g:ale_linters = {
-\ 'javascript': ['flow', 'eslint'],
-\}
+" let g:ale_linters = {
+" \ 'javascript': ['flow', 'eslint'],
+" \}
 
-let g:ale_fixers = {
-\   'javascript': ['eslint'],
-\}
+" let g:ale_fixers = {
+" \   'javascript': ['prettier', 'eslint'],
+" \   'typescript': ['prettier', 'eslint'],
+" \   'typescriptreact': ['prettier', 'eslint'],
+" \}
 
-let g:ale_sign_error = '●' " Less aggressive than the default '>>'
-let g:ale_sign_warning = '.'
-let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
+" let g:ale_disable_lsp = 1
 
-let g:ale_statusline_format = ['X %d', '? %d', '']
-let g:ale_echo_msg_format = '%linter%: %s'
+" let g:ale_sign_error = '●' " Less aggressive than the default '>>'
+" let g:ale_sign_warning = '.'
+" let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
 
-let g:ale_fix_on_save = 1
+" let g:ale_statusline_format = ['X %d', '? %d', '']
+" let g:ale_echo_msg_format = '%linter%: %s'
+
+" let g:ale_fix_on_save = 1
 " End ALE Config
 
 " FZF Config
