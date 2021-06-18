@@ -1,22 +1,9 @@
 set nocompatible
 
-" For Python support:
-" brew install python
-" brew install python3
-" pip2 install neovim --upgrade
-" pip3 install neovim --upgrade
-if has('nvim')
-  let g:python2_host_prog = '/usr/local/bin/python'
-  let g:python3_host_prog = '/usr/local/bin/python3'
-endif
-
 "Plugins
 call plug#begin('~/.vim/plugged')
 
-" Plug 'dense-analysis/ale'
-Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'Lenovsky/nuake'
 Plug 'justinmk/vim-sneak'
 Plug 'unblevable/quick-scope'
 Plug 'osyo-manga/vim-over'
@@ -32,17 +19,13 @@ Plug 'tpope/vim-repeat'
 Plug 'airblade/vim-gitgutter'
 Plug 'tommcdo/vim-exchange'
 
-Plug 'MaxMEllon/vim-jsx-pretty'
-Plug 'pangloss/vim-javascript'
-Plug 'sheerun/vim-polyglot'
-" Plug 'mxw/vim-jsx'
-Plug 'elzr/vim-json'
-Plug 'jparise/vim-graphql'
-Plug 'posva/vim-vue'
-Plug 'hdima/python-syntax'
-Plug 'vim-scripts/autohotkey-ahk'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
-" Plug 'hail2u/vim-css3-syntax'
+
+Plug 'yuezk/vim-js'
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'vim-scripts/autohotkey-ahk'
+
+Plug 'zsugabubus/crazy8.nvim'
 
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 Plug 'zerowidth/vim-copy-as-rtf'
@@ -55,9 +38,20 @@ Plug 'mattn/emmet-vim'
 Plug 'mbbill/undotree'
 Plug 'wellle/targets.vim'
 Plug 'machakann/vim-highlightedyank'
-" Plug 'francoiscabrol/ranger.vim'
+Plug 'francoiscabrol/ranger.vim'
+" We recommend updating the parsers on update
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'edkolev/tmuxline.vim'
+
+" Plug 'nvim-lua/popup.nvim'
+" Plug 'nvim-lua/plenary.nvim'
+" Plug 'nvim-telescope/telescope.nvim'
+
+" Plug 'pechorin/any-jump.vim'
+
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'jesseleite/vim-agriculture'
 " Plug 'jremmen/vim-ripgrep'
@@ -75,13 +69,13 @@ call plug#end()
 
 " set t_Co=256
 
-set lazyredraw
+" set lazyredraw
 
 set termguicolors
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
-filetype plugin indent on
+" filetype plugin indent on
 syntax enable
 
 colorscheme palenight
@@ -97,7 +91,7 @@ set showmatch
 set hlsearch incsearch
 if has("nvim")
 	set inccommand=nosplit
-end
+endif
 set smartcase ignorecase
 
 set scrolloff=2
@@ -106,9 +100,14 @@ set wildmenu wic
 
 set path+=**
 
-set directory=~/.vim/swapfiles//
-set undodir=~/.vim/undofiles//
 set undofile
+if has("nvim")
+  set directory=~/.nvim/swapfiles//
+  set undodir=~/.nvim/undofiles//
+else
+  set directory=~/.vim/swapfiles//
+  set undodir=~/.vim/undofiles//
+endif
 
 set hidden
 
@@ -121,7 +120,7 @@ if has('gui_running')
   set ttimeoutlen=50
 endif
 
-set cmdheight=2
+set cmdheight=1
 set updatetime=300
 set shortmess+=c
 
@@ -153,7 +152,8 @@ nnoremap ä }
 nnoremap Ö {
 nnoremap Ä }
 nnoremap D dd
-nnoremap <C-E> :e <C-r>=expand('%:p:h')<CR>/
+nnoremap <C-E> :e %:h/
+nnoremap <C-S-e> :e %:h/
 
 vnoremap ¤ $
 vnoremap ö {
@@ -170,13 +170,20 @@ nmap <ESC><ESC> :nohl<CR>
 nnoremap gs :Gstatus<CR>
 nnoremap gS :Gstatus<CR>:q<CR>
 
+" Telescope
+" nmap <Leader><Space> <cmd>Telescope find_files<CR>
+" nmap <Leader><TAB> <cmd>Telescope buffers<CR>
+" nmap <Leader>s <cmd>Telescope live_grep<CR>
+
+" FZF
 nmap <Leader><Space> :Files<CR>
 nmap <Leader><TAB> :Buffers<CR>
+nmap <Leader>r :History<CR>
+nmap <Leader>s :Rg<CR>
+nmap <Leader>S :RgRaw
+
 nmap <Leader>q :q<CR>
 nmap <Leader>w :w<CR>
-nmap <Leader>s :RgRaw 
-nmap <Leader>r :History<CR>
-nmap <Leader>p :PrettierAsync<CR>
 
 " Window navigation
 nnoremap <C-j> <C-w>j
@@ -191,9 +198,6 @@ tnoremap <C-l> <C-w>l
 " Buffer navigation
 nnoremap <A-h> :bp<CR>
 nnoremap <A-l> :bn<CR>
-
-nnoremap ˛ :bp<CR>
-nnoremap ﬁ :bn<CR>
 
 " Line manipulation
 nnoremap <A-j> :m .+1<CR>==
@@ -224,18 +228,14 @@ let g:javascript_plugin_flow = 1
 tnoremap <C-n> <C-w>N
 " tnoremap <C-q> <C-w>:bd!<CR>
 
-tnoremap <C-Tab> <C-w>:tabn<CR>
-tnoremap <C-S-Tab> <C-w>:tabp<CR>
-
-nnoremap <C-Tab> :tabn<CR>
-nnoremap <C-S-Tab> :tabp<CR>
-
 nnoremap ° :Nuake<CR>
 inoremap ° <C-\><C-n>:Nuake<CR>
 tnoremap ° <C-\><C-n>:Nuake<CR>
 
 nmap <silent> <C-S-n> <Plug>(coc-diagnostic-prev)
 nmap <silent> <C-n> <Plug>(coc-diagnostic-next)
+
+nmap <silent> gd <Plug>(coc-definition)
 
 func! NewParagraph()
 	"if current line is last line, or current line is non-empty; insert new line
@@ -253,14 +253,26 @@ endfu
 
 nnoremap <expr> o NewParagraph()
 
-" let g:ranger_replace_netrw = 1
+let g:ranger_replace_netrw = 1
 
-let g:polyglot_disabled = ['jsx']
-let g:jsx_ext_required = 0
-let g:closetag_filetypes = 'html,xhtml,phtml,tsx,javascript.tsxjsx,javascript.jsx,javascript'
+let g:vim_jsx_pretty_disable_tsx  = 1
+
+let g:closetag_filetypes = 'javascript,typescript,javascript.jsx,typescript.tsx,javascriptreact,typescriptreact,jsx,tsx,html,xhtml,phtml'
+let g:closetag_regions = {
+      \ 'typescript.tsx': 'jsxRegion,tsxRegion',
+      \ 'javascript.jsx': 'jsxRegion',
+      \ 'typescript': 'jsxRegion,tsxRegion',
+      \ 'javascript': 'jsxRegion',
+      \ 'typescriptreact': 'jsxRegion,tsxRegion',
+      \ 'javascriptreact': 'jsxRegion',
+      \ }
+
 "let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`','<':'>'}
 let g:AutoPairsMoveCharacter = ''
 let g:AutoPairsShortcutFastWrap = ''
+let g:AutoParisShortcutJump = ''
+let g:AutoPairsFlyMode = 1
+let g:AutoPairsShortcutToggle = ''
 
 " Airline Config
 set laststatus=2
@@ -269,39 +281,15 @@ let g:airline#extensions#whitespace#checks = [ 'trailing' ]
 let g:airline_powerline_fonts = 1
 " End Airline Config
 
-" let g:prettier#quickfix_enabled = 0
-" let g:prettier#quickfix_auto_focus = 0
-" let g:prettier#autoformat = 0
-" autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.yaml,*.html PrettierAsync
-
-" ALE Config
-" nmap <silent> <C-p> <Plug>(ale_previous_wrap)
-" nmap <silent> <C-n> <Plug>(ale_next_wrap)
-
-" let g:ale_linters = {
-" \ 'javascript': ['flow', 'eslint'],
-" \}
-
-" let g:ale_fixers = {
-" \   'javascript': ['prettier', 'eslint'],
-" \   'typescript': ['prettier', 'eslint'],
-" \   'typescriptreact': ['prettier', 'eslint'],
-" \}
-
-" let g:ale_disable_lsp = 1
-
-" let g:ale_sign_error = '●' " Less aggressive than the default '>>'
-" let g:ale_sign_warning = '.'
-" let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
-
-" let g:ale_statusline_format = ['X %d', '? %d', '']
-" let g:ale_echo_msg_format = '%linter%: %s'
-
-" let g:ale_fix_on_save = 1
-" End ALE Config
+let g:tmuxline_preset = {
+      \'a'    : '#H',
+      \'b'    : '#(cd #{pane_current_path}; git rev-parse --abbrev-ref HEAD)',
+      \'win'  : '#I #W',
+      \'cwin' : '#I #W',
+      \'y'    : '%a %R'}
 
 " FZF Config
-let g:fzf_layout = { 'down': '~25%' }
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 " End FZF Config
 
 let g:UltiSnipsExpandTrigger="<c-F9>"
@@ -343,3 +331,46 @@ inoremap <silent><expr> <S-TAB>
       \ pumvisible() ? "\<C-p>" :
       \ <SID>check_back_space() ? "\<S-TAB>" :
       \ coc#refresh()
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+autocmd BufNewFile,BufRead *.ts.flow set syntax=javascript
+
+" Cursor to yellow on insert mode
+" Blue on command/other mode
+" Note the use of hex codes (ie 3971ED)
+if exists('$TMUX')
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\033]Pl3971ED\033\\"
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\033]PlFBA922\033\\"
+  silent !echo -ne "\<Esc>Ptmux;\<Esc>\033]Pl3971ED\033\\"
+  autocmd VimLeave * silent !echo -ne "\<Esc>Ptmux;\<Esc>\033]Pl3971ED\033\\"
+else
+  let &t_EI = "\033]Pl3971ED\033\\"
+  let &t_SI = "\033]PlFBA922\033\\"
+  silent !echo -ne "\033]Pl3971ED\033\\"
+  autocmd VimLeave * silent !echo -ne "\033]Pl3971ED\033\\"
+endif
