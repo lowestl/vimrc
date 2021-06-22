@@ -28,7 +28,14 @@ Plug 'vim-scripts/autohotkey-ahk'
 Plug 'zsugabubus/crazy8.nvim'
 
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
-Plug 'zerowidth/vim-copy-as-rtf'
+
+if has("unix")
+  let s:uname = system("uname")
+  if s:uname == "Darwin\n"
+    " Do Mac stuff here
+		Plug 'zerowidth/vim-copy-as-rtf'
+  endif
+endif
 
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
@@ -67,7 +74,7 @@ Plug 'drewtempelmeyer/palenight.vim'
 Plug 'srcery-colors/srcery-vim'
 call plug#end()
 
-" set t_Co=256
+set t_Co=256
 
 " set lazyredraw
 
@@ -78,6 +85,7 @@ let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 " filetype plugin indent on
 syntax enable
 
+set background=dark
 colorscheme palenight
 hi SpellBad gui=underline
 set fillchars+=vert:│
@@ -97,6 +105,8 @@ set smartcase ignorecase
 set scrolloff=2
 
 set wildmenu wic
+
+set clipboard=unnamedplus
 
 set path+=**
 
@@ -232,6 +242,9 @@ nnoremap ° :Nuake<CR>
 inoremap ° <C-\><C-n>:Nuake<CR>
 tnoremap ° <C-\><C-n>:Nuake<CR>
 
+noremap x "_x
+noremap X "_X
+
 nmap <silent> <C-S-n> <Plug>(coc-diagnostic-prev)
 nmap <silent> <C-n> <Plug>(coc-diagnostic-next)
 
@@ -279,6 +292,7 @@ set laststatus=2
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#whitespace#checks = [ 'trailing' ]
 let g:airline_powerline_fonts = 1
+let g:airline_theme = "palenight"
 " End Airline Config
 
 let g:tmuxline_preset = {
