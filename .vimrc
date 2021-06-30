@@ -16,6 +16,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-obsession'
 Plug 'airblade/vim-gitgutter'
 Plug 'tommcdo/vim-exchange'
 
@@ -45,7 +46,11 @@ Plug 'mattn/emmet-vim'
 Plug 'mbbill/undotree'
 Plug 'wellle/targets.vim'
 Plug 'machakann/vim-highlightedyank'
-Plug 'francoiscabrol/ranger.vim'
+Plug 'kevinhwang91/rnvimr', { 'branch': 'main' }
+"
+" Terminal in floating window
+Plug 'voldikss/vim-floaterm'
+
 " We recommend updating the parsers on update
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
@@ -66,12 +71,14 @@ Plug 'jesseleite/vim-agriculture'
 " Plug 'TaDaa/vimade'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-
+Plug 'arcticicestudio/nord-vim'
 Plug 'rakr/vim-one'
 Plug 'morhetz/gruvbox'
 Plug 'tyrannicaltoucan/vim-quantum'
 Plug 'drewtempelmeyer/palenight.vim'
 Plug 'srcery-colors/srcery-vim'
+Plug 'ayu-theme/ayu-vim'
+Plug 'sonph/onehalf', {'rtp': 'vim/'}
 call plug#end()
 
 set t_Co=256
@@ -86,7 +93,7 @@ let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 syntax enable
 
 set background=dark
-colorscheme palenight
+colorscheme onehalfdark
 hi SpellBad gui=underline
 set fillchars+=vert:│
 
@@ -192,6 +199,8 @@ nmap <Leader>r :History<CR>
 nmap <Leader>s :Rg<CR>
 nmap <Leader>S :RgRaw
 
+nmap <Leader>f :RnvimrToggle<CR>
+
 nmap <Leader>q :q<CR>
 nmap <Leader>w :w<CR>
 
@@ -266,7 +275,23 @@ endfu
 
 nnoremap <expr> o NewParagraph()
 
-let g:ranger_replace_netrw = 1
+" Make Ranger replace Netrw and be the file explorer
+let g:rnvimr_ex_enable = 1
+
+" Make Ranger to be hidden after picking a file
+let g:rnvimr_enable_picker = 1
+
+" Customize the initial layout
+let g:rnvimr_layout = {
+            \ 'relative': 'editor',
+            \ 'width': float2nr(round(0.7 * &columns)),
+            \ 'height': float2nr(round(0.7 * &lines)),
+            \ 'col': float2nr(round(0.15 * &columns)),
+            \ 'row': float2nr(round(0.15 * &lines)),
+            \ 'style': 'minimal'
+            \ }
+
+let g:floaterm_open_command = 'vsplit'
 
 let g:vim_jsx_pretty_disable_tsx  = 1
 
@@ -292,7 +317,42 @@ set laststatus=2
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#whitespace#checks = [ 'trailing' ]
 let g:airline_powerline_fonts = 1
-let g:airline_theme = "palenight"
+
+let g:airline_mode_map = {
+			\ '__'     : '-',
+			\ 'c'      : 'c',
+			\ 'i'      : 'i',
+			\ 'ic'     : 'i',
+			\ 'ix'     : 'i',
+			\ 'n'      : 'n',
+			\ 'multi'  : 'm',
+			\ 'ni'     : 'n',
+			\ 'no'     : 'n',
+			\ 'R'      : 'r',
+			\ 'Rv'     : 'r',
+			\ 's'      : 's',
+			\ 'S'      : 's',
+			\ ''     : 's',
+			\ 't'      : 't',
+			\ 'v'      : 'v',
+			\ 'V'      : 'v',
+			\ ''     : 'v',
+			\ }
+
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+
+" let g:airline#extensions#tabline#fnamecollapse = 0
+let g:airline#extensions#branch#format = 'CustomBranchName'
+
+function! CustomBranchName(...)
+  return ""
+endfunction
+
+let g:airline#extensions#tmuxline#enabled = 1
+let g:airline_section_z = "%{airline#util#wrap(airline#extensions#obsession#get_status(),0)}%#__accent_bold#%l/%L:%v%#__restore__#"
+let g:airline_section_y = ""
+
+
 " End Airline Config
 
 let g:tmuxline_preset = {
